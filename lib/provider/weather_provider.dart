@@ -21,6 +21,7 @@ class WeatherProvider with ChangeNotifier {
     Position position = await _locationRepository.getLocation();
     weather = await _weatherRepository.getWeather(
         position.latitude, position.longitude);
+    isLoading = false;
     notifyListeners();
   }
 }

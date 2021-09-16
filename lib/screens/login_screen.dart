@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/provider/google_sign_in.dart';
+import 'package:trebo/screens/home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -56,7 +57,8 @@ class LoginScreen extends StatelessWidget {
                   final provider =
                       Provider.of<GoogleSignInProvider>(context, listen: false);
                   provider.googleLogin();
-                  Navigator.pushNamed(context, '/home');
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
                 },
               ),
               SizedBox(height: 80)

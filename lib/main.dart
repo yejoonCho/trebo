@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/provider/google_sign_in.dart';
 import 'package:trebo/provider/weather_provider.dart';
-import 'package:trebo/screens/home_screen.dart';
 import 'package:trebo/screens/login_screen.dart';
 import 'package:trebo/screens/recommend_screen.dart';
 
@@ -24,12 +23,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TREBO',
-      initialRoute: '/login',
-      routes: {
-        '/home': (context) => HomeScreen(),
-        '/recommend': (context) => RecommendScreen(),
-        '/login': (context) => LoginScreen()
-      },
+      home: LoginScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
