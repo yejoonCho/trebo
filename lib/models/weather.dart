@@ -1,15 +1,15 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 class Weather {
-  final String url;
-  Weather(this.url);
+  int? id;
+  String? main;
+  String? description;
+  String? icon;
 
-  Future<dynamic> getWeatherData() async {
-    http.Response response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      var weatherData = jsonDecode(response.body);
-      return weatherData;
-    }
+  Weather({this.id, this.main, this.description, this.icon});
+
+  Weather.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    main = json['main'];
+    description = json['description'];
+    icon = json['icon'];
   }
 }

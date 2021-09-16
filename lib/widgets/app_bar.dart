@@ -22,6 +22,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
             final provider =
                 Provider.of<GoogleSignInProvider>(context, listen: false);
             provider.logout();
+            Navigator.pushNamed(context, '/login');
           },
         ),
         SizedBox(width: 15),

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 
 class TouristAttractionProvider with ChangeNotifier {
