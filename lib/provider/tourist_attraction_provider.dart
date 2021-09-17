@@ -1,14 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:trebo/models/tourist_attraction.dart';
+import 'package:trebo/repositories/tourist_attraction_repository.dart';
 
 class TouristAttractionProvider with ChangeNotifier {
-  List<TouristAttraction> touristAttraction = [
-    TouristAttraction.fromJson({
-      'title': '북촌 한옥마을',
-      'description': '북촌에 위치한 한옥마을입니다.',
-      'imgUrl': 'hanok.jpg',
-      'latitude': 124.513,
-      'longitude': 37.34213
-    })
-  ];
+  var isLoading = false;
+  List<TouristAttraction> touristAttractions = [];
+
+  final _storeRepository = TouristAttractionRepository();
+
+  TouristAttractionProvider() {
+    fetch();
+  }
+
+  Future fetch() async {
+    isLoading = true;
+    notifyListeners();
+
+    touristAttractions = _storeRepository.fetch();
+    isLoading = false;
+    notifyListeners();
+  }
 }

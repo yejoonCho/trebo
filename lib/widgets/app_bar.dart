@@ -1,36 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:trebo/provider/google_sign_in.dart';
 
-class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
-  @override
-  final Size preferredSize = Size(56, 56);
+class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text('TRRBO'),
-      centerTitle: true,
-      backgroundColor: Colors.black38,
-      actions: [
-        TextButton(
-          child: Text(
-            'Logout',
-            style: GoogleFonts.lato(fontSize: 16, color: Colors.yellow),
-          ),
-          onPressed: () {
-            final provider =
-                Provider.of<GoogleSignInProvider>(context, listen: false);
-            provider.logout();
-            Navigator.pushNamed(context, '/login');
-          },
+    Size size = MediaQuery.of(context).size;
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 65,
+      ),
+      child: Container(
+        height: size.height * 0.1,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black.withOpacity(0.4)),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Icon(Icons.sort_rounded),
+                ),
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black.withOpacity(0.4)),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Icon(Icons.insights_rounded),
+                )
+              ],
+            )
+          ],
         ),
-        SizedBox(width: 15),
-        ElevatedButton(
-          child: Icon(Icons.search),
-          onPressed: () {},
-        ),
-      ],
+      ),
     );
   }
 }

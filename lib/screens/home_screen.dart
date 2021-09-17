@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trebo/provider/weather_provider.dart';
+import 'package:trebo/screens/list_screen.dart';
 import 'package:trebo/widgets/app_bar.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/drawer.dart';
@@ -13,14 +14,13 @@ class HomeScreen extends StatelessWidget {
     final weatherProvider = Provider.of<WeatherProvider>(context);
 
     return Scaffold(
-      appBar: CustomAppBar(),
       drawer: CustomDrawer(),
       bottomNavigationBar: CustomBottomNavigationBar(),
       body: weatherProvider.isLoading
           ? _loadingWidget()
           : Container(
               alignment: Alignment.center,
-              color: Colors.blueGrey.shade900,
+              color: Colors.grey.shade300,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -42,7 +42,10 @@ class HomeScreen extends StatelessWidget {
                   ElevatedButton(
                     child: Text('press me'),
                     onPressed: () {
-                      print(weatherProvider.weather!.description);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ListScreen()));
                     },
                   )
                 ],
