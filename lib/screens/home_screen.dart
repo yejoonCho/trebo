@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trebo/provider/weather_provider.dart';
+import 'package:trebo/repositories/tourist_attraction_repository.dart';
 import 'package:trebo/screens/list_screen.dart';
 import 'package:trebo/widgets/app_bar.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
@@ -12,6 +13,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
     final weatherProvider = Provider.of<WeatherProvider>(context);
+    final _repository = TouristAttractionRepository();
 
     return Scaffold(
       drawer: CustomDrawer(),

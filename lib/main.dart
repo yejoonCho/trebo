@@ -14,7 +14,7 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (context) => GoogleSignInProvider()),
       ChangeNotifierProvider(create: (context) => WeatherProvider()),
-      ChangeNotifierProvider(create: (context) => TouristAttractionProvider())
+      ChangeNotifierProvider(create: (context) => TouristAttractionProvider()),
     ],
     child: MyApp(),
   ));

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class TouristAttraction {
   String? title;
   String? description;
-  String? imgUrl;
+  List? imgUrl;
   double? latitude;
   double? longitude;
   int? id;
@@ -11,6 +11,16 @@ class TouristAttraction {
 
   TouristAttraction(this.title, this.description, this.latitude, this.longitude,
       this.id, this.address);
+
+  TouristAttraction.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    title = map['title'];
+    description = map['description'];
+    latitude = map['latitude'];
+    longitude = map['longitude'];
+    address = map['address'];
+    imgUrl = map['imgUrl'];
+  }
 
   TouristAttraction.fromSnapshot(QueryDocumentSnapshot snapshot) {
     title = snapshot.get('title');

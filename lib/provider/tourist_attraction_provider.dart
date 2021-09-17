@@ -3,10 +3,9 @@ import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/repositories/tourist_attraction_repository.dart';
 
 class TouristAttractionProvider with ChangeNotifier {
-  var isLoading = false;
   List<TouristAttraction> touristAttractions = [];
-
-  final _storeRepository = TouristAttractionRepository();
+  bool isLoading = false;
+  final _touristAttractionRepository = TouristAttractionRepository();
 
   TouristAttractionProvider() {
     fetch();
@@ -16,7 +15,7 @@ class TouristAttractionProvider with ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    touristAttractions = _storeRepository.fetch();
+    touristAttractions = await _touristAttractionRepository.fetch();
     isLoading = false;
     notifyListeners();
   }
