@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/repositories/tourist_attraction_repository.dart';

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class TouristAttraction {
   String? title;
   String? description;
-  List? imgUrl;
+  String? imgUrl;
   double? latitude;
   double? longitude;
   int? id;
