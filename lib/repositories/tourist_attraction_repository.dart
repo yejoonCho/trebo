@@ -14,17 +14,6 @@ class TouristAttractionRepository {
           TouristAttraction.fromMap(document.data() as Map<String, dynamic>));
     });
 
-    // Future.forEach(touristAttractions, (TouristAttraction element) async {
-    //   Reference ref = FirebaseStorage.instance.ref().child(element.imgUrl!);
-    //   String url = await ref.getDownloadURL();
-    //   element.imgUrl = url;
-    // });
-
-    // touristAttractions.forEach((element) async {
-    //   Reference ref = FirebaseStorage.instance.ref().child(element.imgUrl!);
-    //   String url = await ref.getDownloadURL();
-    //   element.imgUrl = url;
-    // });
     await fetchImg();
     return touristAttractions;
   }

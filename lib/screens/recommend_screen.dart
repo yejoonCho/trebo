@@ -86,10 +86,10 @@ class RecommendScreen extends StatelessWidget {
               boxShadow: [BoxShadow()]),
         ),
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DetailScreen(title: mainText)));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => DetailScreen(title: mainText)));
         },
       ),
     );
