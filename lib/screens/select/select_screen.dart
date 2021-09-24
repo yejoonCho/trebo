@@ -8,39 +8,35 @@ import 'package:trebo/widgets/bottom_navigation_bar.dart';
 class SelectScreeen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<TouristAttractionProvider>(context);
-
     return Scaffold(
-      body: provider.isLoading
-          ? _loadingWidget()
-          : Container(
-              color: Colors.grey[200],
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                  ),
-                  itemBuilder: (context, index) =>
-                      _buildItem(context, provider.touristAttractions),
-                  itemCount: 10,
-                ),
-              ),
+      body: Container(
+        color: Colors.grey[200],
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
             ),
+            itemBuilder: (context, index) => _buildItem(context, index),
+            itemCount: 5,
+          ),
+        ),
+      ),
       bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 
-  Widget _buildItem(
-      BuildContext context, List<TouristAttraction> touristAttractions) {
-    int maxNum = touristAttractions.length;
-    int rand = Random().nextInt(maxNum);
+  Widget _buildItem(BuildContext context, int index) {
+    final provider = Provider.of<TouristAttractionProvider>(context);
+    int rand = Random().nextInt(provider.touristAttractions.length);
+    provider.downloadImage(rand);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Image.network(
-        touristAttractions[rand].imgUrl![0],
+        provider.touristAttractions[rand].imgUrl![0],
         fit: BoxFit.cover,
       ),
     );

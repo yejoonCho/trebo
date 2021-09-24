@@ -14,20 +14,19 @@ class TouristAttractionRepository {
           TouristAttraction.fromMap(document.data() as Map<String, dynamic>));
     });
 
-    await fetchImg();
+    // await fetchImg();
     return touristAttractions;
   }
 
-  fetchImg() async {
-    for (int i = 0; i < touristAttractions.length; i++) {
-      for (int j = 0; j < touristAttractions[i].imgUrl!.length; j++) {
-        Reference ref = FirebaseStorage.instance
-            .ref()
-            .child(touristAttractions[i].imgUrl![j]);
-        String url = await ref.getDownloadURL();
-        print('다운로드');
-        touristAttractions[i].imgUrl![j] = url;
-      }
-    }
-  }
+  // fetchImg() async {
+  //   for (int i = 0; i < touristAttractions.length; i++) {
+  //     for (int j = 0; j < touristAttractions[i].imgUrl!.length; j++) {
+  //       Reference ref = FirebaseStorage.instance
+  //           .ref()
+  //           .child(touristAttractions[i].imgUrl![j]);
+  //       String url = await ref.getDownloadURL();
+  //       touristAttractions[i].imgUrl![j] = url;
+  //     }
+  //   }
+  // }
 }
