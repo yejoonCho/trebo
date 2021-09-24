@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:trebo/provider/weather_provider.dart';
 import 'package:trebo/repositories/tourist_attraction_repository.dart';
 import 'package:trebo/screens/list_screen.dart';
+import 'package:trebo/screens/select/select_screen.dart';
 import 'package:trebo/widgets/app_bar.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/drawer.dart';
@@ -42,12 +43,21 @@ class HomeScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   ElevatedButton(
-                    child: Text('press me'),
+                    child: Text('list page'),
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => ListScreen()));
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text('select page'),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SelectScreeen()));
                     },
                   )
                 ],

@@ -20,10 +20,14 @@ class TouristAttractionRepository {
 
   fetchImg() async {
     for (int i = 0; i < touristAttractions.length; i++) {
-      Reference ref =
-          FirebaseStorage.instance.ref().child(touristAttractions[i].imgUrl!);
-      String url = await ref.getDownloadURL();
-      touristAttractions[i].imgUrl = url;
+      for (int j = 0; j < touristAttractions[i].imgUrl!.length; j++) {
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child(touristAttractions[i].imgUrl![j]);
+        String url = await ref.getDownloadURL();
+        print('다운로드');
+        touristAttractions[i].imgUrl![j] = url;
+      }
     }
   }
 }

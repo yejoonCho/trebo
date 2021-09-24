@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trebo/screens/detail_screen.dart';
+import 'package:trebo/screens/details/detail_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/drawer.dart';
 

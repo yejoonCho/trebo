@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trebo/models/tourist_attraction.dart';
+import 'package:trebo/screens/details/components/detail_app_bar.dart';
+
+import 'components/carousel_images.dart';
 
 class DetailScreen extends StatelessWidget {
   final TouristAttraction? touristAttraction;
@@ -11,7 +14,12 @@ class DetailScreen extends StatelessWidget {
     return Scaffold(
         body: Column(
       children: [
-        MainImage(),
+        Stack(
+          children: [
+            CarouselImages(touristAttraction!.imgUrl!),
+            DetailAppBar(),
+          ],
+        ),
       ],
     ));
   }

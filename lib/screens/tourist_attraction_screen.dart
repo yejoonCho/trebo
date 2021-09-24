@@ -2,7 +2,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/provider/tourist_attraction_provider.dart';
-import 'package:trebo/screens/detail_screen.dart';
+import 'package:trebo/screens/details/detail_screen.dart';
 
 class TouristAttractionScreen extends StatelessWidget {
   @override
@@ -44,7 +44,7 @@ class TouristAttractionScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     child: Image(
                       image: NetworkImage(
-                          provider.touristAttractions[index].imgUrl!),
+                          provider.touristAttractions[index].imgUrl![0]),
                       height: 180,
                       width: size.width,
                       fit: BoxFit.cover,
