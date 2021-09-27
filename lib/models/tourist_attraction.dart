@@ -9,8 +9,14 @@ class TouristAttraction {
   int? id;
   String? address;
 
-  TouristAttraction(this.title, this.description, this.latitude, this.longitude,
-      this.id, this.address);
+  TouristAttraction(
+      {this.title,
+      this.description,
+      this.latitude,
+      this.longitude,
+      this.id,
+      this.address,
+      this.imgUrl});
 
   TouristAttraction.fromMap(Map<String, dynamic> map) {
     id = map['id'];
@@ -22,13 +28,16 @@ class TouristAttraction {
     imgUrl = map['imgUrl'];
   }
 
-  TouristAttraction.fromSnapshot(QueryDocumentSnapshot snapshot) {
-    title = snapshot.get('title');
-    description = snapshot.get('description');
-    imgUrl = snapshot.get('imgUrl');
-    latitude = snapshot.get('latitude');
-    longitude = snapshot.get('longitude');
-    address = snapshot.get('address');
-    id = snapshot.get('id');
+  factory TouristAttraction.fromDocument(DocumentSnapshot doc) {
+    final map = doc.data() as Map<String, dynamic>;
+    return TouristAttraction(
+      id: map['id'],
+      title: map['title'],
+      description: map['description'],
+      latitude: map['latitude'],
+      longitude: map['longitude'],
+      address: map['address'],
+      imgUrl: map['imgUrl'],
+    );
   }
 }
