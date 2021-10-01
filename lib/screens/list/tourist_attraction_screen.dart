@@ -2,14 +2,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/models/tourist_attraction.dart';
-import 'package:trebo/provider/list_provider.dart';
+import 'package:trebo/provider/similar_list_provider.dart';
 import 'package:trebo/screens/details/detail_screen.dart';
 
 class TouristAttractionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ListProvider>(context);
-    return provider.isLoading
+    final similarListProvider = Provider.of<SimilarListProvider>(context);
+    return similarListProvider.isLoading
         ? CircularProgressIndicator()
         : Expanded(
             child: ListView.builder(
@@ -17,7 +17,7 @@ class TouristAttractionScreen extends StatelessWidget {
               itemCount: 5,
               itemBuilder: (context, index) {
                 return _buildTouristAttraction(
-                    context, index, provider.touristAttractions);
+                    context, index, similarListProvider.touristAttractions);
               },
             ),
           );
@@ -26,6 +26,7 @@ class TouristAttractionScreen extends StatelessWidget {
   Widget _buildTouristAttraction(BuildContext context, int index,
       List<TouristAttraction> touristAttractions) {
     Size size = MediaQuery.of(context).size;
+    final similarListProvider = Provider.of<SimilarListProvider>(context);
 
     return GestureDetector(
       onTap: () {
@@ -47,7 +48,8 @@ class TouristAttractionScreen extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image(
-                      image: NetworkImage(touristAttractions[index].imgUrl![0]),
+                      image: NetworkImage(
+                          similarListProvider.downloadedURL[index]),
                       height: 180,
                       width: size.width,
                       fit: BoxFit.cover,

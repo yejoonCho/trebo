@@ -1,9 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trebo/models/tourist_attraction.dart';
-import 'package:trebo/provider/select_provider.dart';
-import 'package:trebo/provider/list_provider.dart';
+import 'package:trebo/provider/random_image_provider.dart';
+import 'package:trebo/provider/similar_list_provider.dart';
 import 'package:trebo/screens/list/list_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 
@@ -12,12 +11,12 @@ class SelectScreeen extends StatelessWidget {
   SelectScreeen({this.title});
   @override
   Widget build(BuildContext context) {
-    final selectProvider = Provider.of<SelectProvider>(context);
+    final randomImageProvider = Provider.of<RandomImageProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: title,
       ),
-      body: selectProvider.isLoading
+      body: randomImageProvider.isLoading
           ? _loadingWidget()
           : Container(
               color: Colors.grey[200],
@@ -39,21 +38,22 @@ class SelectScreeen extends StatelessWidget {
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    final selectProvider = Provider.of<SelectProvider>(context);
-    final listProvider = Provider.of<ListProvider>(context);
+    final randomImageProvider = Provider.of<RandomImageProvider>(context);
+    final similarListProvider = Provider.of<SimilarListProvider>(context);
     return GestureDetector(
       onTap: () async {
-        await listProvider.fetch();
-        listProvider.cosineSimilarity(selectProvider.randomImg[index] + '.jpg');
-        await listProvider.getData();
-        await listProvider.downloadImage();
+        await similarListProvider.fetch();
+        await similarListProvider
+            .calculateSimilarity(randomImageProvider.randomImg[index]);
+        await similarListProvider.getData();
+        await similarListProvider.downloadImage();
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ListScreen()));
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Image.network(
-          selectProvider.randomURL[index],
+          randomImageProvider.randomURL[index],
           fit: BoxFit.cover,
         ),
       ),

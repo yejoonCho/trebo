@@ -16,7 +16,7 @@ class DetailScreen extends StatelessWidget {
       children: [
         Stack(
           children: [
-            CarouselImages(touristAttraction!.imgUrl!),
+            // CarouselImages(touristAttraction!.imgUrl!),
             DetailAppBar(),
           ],
         ),
