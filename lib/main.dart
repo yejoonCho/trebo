@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/provider/google_sign_in.dart';
-import 'package:trebo/provider/tourist_attraction_provider.dart';
+import 'package:trebo/provider/select_provider.dart';
+import 'package:trebo/provider/list_provider.dart';
 import 'package:trebo/provider/weather_provider.dart';
 import 'package:trebo/screens/login_screen.dart';
 import 'package:trebo/screens/recommend_screen.dart';
@@ -17,7 +18,8 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (context) => GoogleSignInProvider()),
       ChangeNotifierProvider(create: (context) => WeatherProvider()),
-      ChangeNotifierProvider(create: (context) => TouristAttractionProvider()),
+      ChangeNotifierProvider(create: (context) => ListProvider()),
+      ChangeNotifierProvider(create: (context) => SelectProvider()),
     ],
     child: MyApp(),
   ));

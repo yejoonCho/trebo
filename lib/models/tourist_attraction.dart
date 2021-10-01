@@ -1,43 +1,34 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class TouristAttraction {
+  int? id;
   String? title;
-  String? description;
-  List<dynamic>? imgUrl;
+  String? address;
   double? latitude;
   double? longitude;
-  int? id;
-  String? address;
+  List<String>? imgUrl;
+  String? description;
 
-  TouristAttraction(
-      {this.title,
-      this.description,
-      this.latitude,
-      this.longitude,
-      this.id,
-      this.address,
-      this.imgUrl});
+  TouristAttraction.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    description = json['description'];
+    latitude = json['latitude'];
+    longitude = json['longitude'];
+    address = json['address'];
 
-  TouristAttraction.fromMap(Map<String, dynamic> map) {
-    id = map['id'];
-    title = map['title'];
-    description = map['description'];
-    latitude = map['latitude'];
-    longitude = map['longitude'];
-    address = map['address'];
-    imgUrl = map['imgUrl'];
+    var imgUrlFromJson = json['imgURL'];
+    imgUrl = List<String>.from(imgUrlFromJson);
   }
 
-  factory TouristAttraction.fromDocument(DocumentSnapshot doc) {
-    final map = doc.data() as Map<String, dynamic>;
-    return TouristAttraction(
-      id: map['id'],
-      title: map['title'],
-      description: map['description'],
-      latitude: map['latitude'],
-      longitude: map['longitude'],
-      address: map['address'],
-      imgUrl: map['imgUrl'],
-    );
-  }
+  // factory TouristAttraction.fromDocument(DocumentSnapshot doc) {
+  //   final map = doc.data() as Map<String, dynamic>;
+  //   return TouristAttraction(
+  //     id: map['id'],
+  //     title: map['title'],
+  //     description: map['description'],
+  //     latitude: map['latitude'],
+  //     longitude: map['longitude'],
+  //     address: map['address'],
+  //     imgUrl: map['imgUrl'],
+  //   );
+  // }
 }

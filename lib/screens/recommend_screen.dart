@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trebo/screens/details/detail_screen.dart';
+import 'package:trebo/screens/list/list_screen.dart';
+import 'package:trebo/screens/select/select_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/drawer.dart';
 
@@ -37,7 +39,8 @@ class RecommendScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     getExpanded(context, 'cafe', 'Cafe', '33 place'),
-                    getExpanded(context, 'tracking', 'Near', '23 place'),
+                    getExpanded(
+                        context, 'tracking', 'touristAttraction', '23 place'),
                   ],
                 ),
               ),
@@ -45,9 +48,8 @@ class RecommendScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    getExpanded(context, 'dining', 'Fast food', '33 place'),
-                    getExpanded(
-                        context, 'cuisine', 'Featured Foods', '23 place'),
+                    getExpanded(context, 'dining', 'Hotel', '33 place'),
+                    getExpanded(context, 'cuisine', 'Festival', '23 place'),
                   ],
                 ),
               ),
@@ -86,10 +88,8 @@ class RecommendScreen extends StatelessWidget {
               boxShadow: [BoxShadow()]),
         ),
         onTap: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => DetailScreen(title: mainText)));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => SelectScreeen()));
         },
       ),
     );

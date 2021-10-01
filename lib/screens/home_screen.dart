@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:trebo/provider/weather_provider.dart';
-import 'package:trebo/screens/list_screen.dart';
+import 'package:trebo/screens/list/list_screen.dart';
 import 'package:trebo/screens/select/select_screen.dart';
 import 'package:trebo/widgets/app_bar.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
@@ -43,19 +46,23 @@ class HomeScreen extends StatelessWidget {
                   ElevatedButton(
                     child: Text('list page'),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ListScreen()));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ListScreen()));
                     },
                   ),
                   ElevatedButton(
                     child: Text('select page'),
-                    onPressed: () {
+                    onPressed: () async {
+                      // final repository = TestTourRepository();
+                      // final testTours = await repository.getData();
+                      // print(testTours[0].vec);
+                      // // await readJson();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ListScreen()));
+                              builder: (context) => SelectScreeen()));
                     },
                   )
                 ],
