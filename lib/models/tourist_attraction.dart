@@ -6,6 +6,7 @@ class TouristAttraction {
   double? longitude;
   String? description;
   List<Map<String, dynamic>>? imgURL;
+  List<String>? downloadedURL;
 
   TouristAttraction.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -15,5 +16,10 @@ class TouristAttraction {
     longitude = json['longitude'];
     description = json['description'];
     imgURL = List<Map<String, dynamic>>.from(json['imgURL']);
+    downloadedURL = [];
+    // imgURL!.forEach((element) {
+    //   element[element.keys.toList()[0]] =
+    //       List<num>.from(element.values.toList()[0]);
+    // });
   }
 }

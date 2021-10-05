@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ffi';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,22 +19,16 @@ class SimilarListProvider with ChangeNotifier {
   double? longitude;
   bool isLoading = false;
   Map<String, num> cosineSimilarityMap = {};
-  final downloadedURL = [];
 
   // 레포지토리
   final TouristAttractionRepository _touristAttractionRepository =
       TouristAttractionRepository();
   // final LocationRepository _locationRepository = LocationRepository();
 
-  Future fetch() async {
-    isLoading = true;
-    notifyListeners();
-    // Position position = await _locationRepository.getLocation();
-    // cosineSimilarity(imgURL!);
-    // await downloadImage();
-  }
-
+  // 이미지끼리 유사도 구하는 함수
   calculateSimilarity(String imgURL) async {
+    isLoading = true;
+
     Map<String, num> temp = {};
     touristAttractions = await _touristAttractionRepository.getData();
     touristAttractions.forEach((e1) {
@@ -64,7 +59,6 @@ class SimilarListProvider with ChangeNotifier {
       }
       count++;
     });
-    print(cosineSimilarityMap.length);
     print(cosineSimilarityMap);
   }
 
@@ -82,20 +76,48 @@ class SimilarListProvider with ChangeNotifier {
     print(touristAttractions);
   }
 
-  // Storage에서 이미지 다운로드
   Future<void> downloadImage() async {
     for (int i = 0; i < touristAttractions.length; i++) {
-      for (int j = 0; j < touristAttractions[i].imgURL!.length; j++) {
-        Reference ref = FirebaseStorage.instance
-            .ref()
-            .child('tourist_attraction')
-            .child(touristAttractions[i].imgURL![j].keys.toList()[0]);
-        print(touristAttractions[i].imgURL![j].keys.toList()[0]);
-        String url = await ref.getDownloadURL();
-        downloadedURL.add(url);
-      }
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('tourist_attraction')
+          .child(touristAttractions[i].imgURL![0].keys.toList()[0]);
+      String url = await ref.getDownloadURL();
+      touristAttractions[i].downloadedURL!.add(url);
     }
     isLoading = false;
     notifyListeners();
   }
+
+  Future<void> downloadOneImage(TouristAttraction touristAttraction) async {
+    // isLoading = true;
+    // notifyListeners();
+    touristAttraction.downloadedURL = [];
+    print(touristAttraction.imgURL!.length);
+    for (int i = 0; i < touristAttraction.imgURL!.length; i++) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('tourist_attraction')
+          .child(touristAttraction.imgURL![i].keys.toList()[0]);
+      String url = await ref.getDownloadURL();
+      touristAttraction.downloadedURL!.add(url);
+    }
+    isLoading = false;
+    notifyListeners();
+  }
+  // Future<void> downloadImage() async {
+  //   for (int i = 0; i < touristAttractions.length; i++) {
+  //     for (int j = 0; j < touristAttractions[i].imgURL!.length; j++) {
+  //       Reference ref = FirebaseStorage.instance
+  //           .ref()
+  //           .child('tourist_attraction')
+  //           .child(touristAttractions[i].imgURL![j].keys.toList()[0]);
+  //       print(touristAttractions[i].imgURL![j].keys.toList()[0]);
+  //       String url = await ref.getDownloadURL();
+  //       downloadedURL.add(url);
+  //     }
+  //   }
+  //   isLoading = false;
+  //   notifyListeners();
+  // }
 }

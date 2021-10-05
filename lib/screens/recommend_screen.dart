@@ -8,7 +8,7 @@ import 'package:trebo/widgets/drawer.dart';
 class RecommendScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         drawer: CustomDrawer(),
         bottomNavigationBar: CustomBottomNavigationBar(),
@@ -20,7 +20,7 @@ class RecommendScreen extends StatelessWidget {
         ),
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          height: MediaQuery.of(context).size.height,
+          height: size.height,
           color: Colors.grey.shade300,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

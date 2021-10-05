@@ -8,7 +8,7 @@ import 'package:trebo/provider/weather_provider.dart';
 import 'package:trebo/repositories/tourist_attraction_repository.dart';
 import 'package:trebo/screens/list/list_screen.dart';
 import 'package:trebo/screens/select/select_screen.dart';
-import 'package:trebo/widgets/app_bar.dart';
+import 'package:trebo/screens/list/list_screen_app_bar.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/drawer.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () async {
                       final repository = TouristAttractionRepository();
                       final testTours = await repository.getData();
-                      print(testTours[0].title);
+                      print(testTours[0].imgURL![2]);
                     },
                   )
                 ],

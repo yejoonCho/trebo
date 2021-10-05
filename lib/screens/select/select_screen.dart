@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:trebo/provider/random_image_provider.dart';
 import 'package:trebo/provider/similar_list_provider.dart';
 import 'package:trebo/screens/list/list_screen.dart';
+import 'package:trebo/screens/login_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
+import 'package:trebo/widgets/custom_loading.dart';
 
 class SelectScreeen extends StatelessWidget {
   final title;
@@ -12,14 +14,15 @@ class SelectScreeen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final randomImageProvider = Provider.of<RandomImageProvider>(context);
+    final similarListProvider = Provider.of<SimilarListProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: title,
       ),
-      body: randomImageProvider.isLoading
-          ? _loadingWidget()
+      body: randomImageProvider.isLoading || similarListProvider.isLoading
+          ? CustomLoading(message: '사진을 가져오는 중입니다.')
           : Container(
-              color: Colors.grey[200],
+              color: Colors.grey.shade200,
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: GridView.builder(
@@ -42,7 +45,6 @@ class SelectScreeen extends StatelessWidget {
     final similarListProvider = Provider.of<SimilarListProvider>(context);
     return GestureDetector(
       onTap: () async {
-        await similarListProvider.fetch();
         await similarListProvider
             .calculateSimilarity(randomImageProvider.randomImg[index]);
         await similarListProvider.getData();
@@ -56,15 +58,6 @@ class SelectScreeen extends StatelessWidget {
           randomImageProvider.randomURL[index],
           fit: BoxFit.cover,
         ),
-      ),
-    );
-  }
-
-  Widget _loadingWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [CircularProgressIndicator(), Text('정보를 가져오는 중')],
       ),
     );
   }

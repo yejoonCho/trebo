@@ -19,6 +19,7 @@ class TouristAttractionRepository {
 
   Future<List<TouristAttraction>> getSelectedData(
       List<String> filterTitle) async {
+    _touristAttractions = [];
     final String response =
         await rootBundle.loadString('data/tourist_attraction.json');
     List jsonResult = jsonDecode(response);

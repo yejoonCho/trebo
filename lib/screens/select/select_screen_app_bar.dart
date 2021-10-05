@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomAppBar extends StatelessWidget {
+class SelectScreenAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -8,10 +8,10 @@ class CustomAppBar extends StatelessWidget {
       padding: const EdgeInsets.only(
         left: 20,
         right: 20,
-        top: 65,
+        top: 10,
       ),
       child: Container(
-        height: size.height * 0.1,
+        height: size.height * 0.08,
         child: Column(
           children: [
             Row(
@@ -28,7 +28,7 @@ class CustomAppBar extends StatelessWidget {
                       border: Border.all(color: Colors.black.withOpacity(0.4)),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Icon(Icons.sort_rounded),
+                    child: Icon(Icons.arrow_back),
                   ),
                 ),
                 Container(

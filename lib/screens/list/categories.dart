@@ -14,8 +14,8 @@ class _CategoriesState extends State<Categories> {
     return Padding(
       padding: const EdgeInsets.only(
         left: 15,
-        top: 5,
         bottom: 5,
+        top: 5,
         right: 15,
       ),
       child: Container(
@@ -32,7 +32,6 @@ class _CategoriesState extends State<Categories> {
   }
 
   Widget _buildCategory(BuildContext context, int index) {
-    Size size = MediaQuery.of(context).size;
     return GestureDetector(
       child: Padding(
         padding: EdgeInsets.only(right: 10),
