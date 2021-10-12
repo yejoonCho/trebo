@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:trebo/screens/details/detail_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:trebo/models/tourist_attraction.dart';
+import 'package:trebo/screens/detail/detail_screen.dart';
 import 'package:trebo/screens/list/list_screen.dart';
 import 'package:trebo/screens/select/select_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/drawer.dart';
 
-class RecommendScreen extends StatelessWidget {
+class CategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -88,8 +90,13 @@ class RecommendScreen extends StatelessWidget {
               boxShadow: [BoxShadow()]),
         ),
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => SelectScreeen()));
+          final touristAttractions =
+              Provider.of<List<TouristAttraction>>(context, listen: false);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      SelectScreeen(touristAttractions: touristAttractions)));
         },
       ),
     );

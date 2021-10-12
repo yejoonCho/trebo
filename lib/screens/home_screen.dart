@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/provider/weather_provider.dart';
 import 'package:trebo/repositories/tourist_attraction_repository.dart';
+import 'package:trebo/screens/category_screen.dart';
 import 'package:trebo/screens/list/list_screen.dart';
 import 'package:trebo/screens/select/select_screen.dart';
 import 'package:trebo/screens/list/list_screen_app_bar.dart';
@@ -18,7 +21,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
     final weatherProvider = Provider.of<WeatherProvider>(context);
-
+    final touristAttractions = Provider.of<List<TouristAttraction>>(context);
     return Scaffold(
       drawer: CustomDrawer(),
       bottomNavigationBar: CustomBottomNavigationBar(),
@@ -46,20 +49,18 @@ class HomeScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   ElevatedButton(
-                    child: Text('list page'),
+                    child: Text('to the Category Screen'),
                     onPressed: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => ListScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CategoryScreen()));
                     },
                   ),
                   ElevatedButton(
-                    child: Text('select page'),
-                    onPressed: () async {
-                      final repository = TouristAttractionRepository();
-                      final testTours = await repository.getData();
-                      print(testTours[0].imgURL![2]);
+                    child: Text('test'),
+                    onPressed: () {
+                      print(touristAttractions.length);
                     },
                   )
                 ],

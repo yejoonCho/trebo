@@ -6,20 +6,25 @@ import 'package:trebo/provider/google_sign_in.dart';
 import 'package:trebo/provider/random_image_provider.dart';
 import 'package:trebo/provider/similar_list_provider.dart';
 import 'package:trebo/provider/weather_provider.dart';
+import 'package:trebo/repositories/tourist_attraction_repository.dart';
 import 'package:trebo/screens/login_screen.dart';
-import 'package:trebo/screens/recommend_screen.dart';
+import 'package:trebo/screens/category_screen.dart';
 
 void main() async {
   // 파이어베이스 설정
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // 레파지토리
+  final _touristAttractionRepository = TouristAttractionRepository();
 
   return runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => GoogleSignInProvider()),
       ChangeNotifierProvider(create: (context) => WeatherProvider()),
-      ChangeNotifierProvider(create: (context) => SimilarListProvider()),
-      ChangeNotifierProvider(create: (context) => RandomImageProvider()),
+      StreamProvider<List<TouristAttraction>>(
+        create: (context) => _touristAttractionRepository.fetch(),
+        initialData: [],
+      )
     ],
     child: MyApp(),
   ));

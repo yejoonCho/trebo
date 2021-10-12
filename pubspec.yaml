@@ -46,6 +46,8 @@ dependencies:
   # calculation
   latlong2: ^0.8.1
   ml_linalg: ^13.0.2
+  # test
+  # test: any
 
 
 dev_dependencies:

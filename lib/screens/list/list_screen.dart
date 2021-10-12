@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/models/tourist_attraction.dart';
-import 'package:trebo/provider/similar_list_provider.dart';
-import 'package:trebo/screens/details/detail_screen.dart';
+import 'package:trebo/screens/detail/detail_screen.dart';
 import 'package:trebo/screens/list/list_screen_app_bar.dart';
 import 'package:trebo/screens/list/categories.dart';
 
-class ListScreen extends StatelessWidget {
+class ListScreen extends StatefulWidget {
+  final List<TouristAttraction> touristAttractions;
+  ListScreen({required this.touristAttractions});
+  @override
+  _ListScreenState createState() => _ListScreenState();
+}
+
+class _ListScreenState extends State<ListScreen> {
   @override
   Widget build(BuildContext context) {
     double top = MediaQuery.of(context).padding.top;
-    final similarListProvider = Provider.of<SimilarListProvider>(context);
     return Scaffold(
       body: Container(
         color: Colors.grey.shade300,
@@ -22,10 +27,9 @@ class ListScreen extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
-                itemCount: 5,
+                itemCount: widget.touristAttractions.length,
                 itemBuilder: (context, index) {
-                  return _buildTouristAttraction(
-                      context, index, similarListProvider.touristAttractions);
+                  return _buildItem(context, index, widget.touristAttractions);
                 },
               ),
             )
@@ -35,14 +39,12 @@ class ListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTouristAttraction(BuildContext context, int index,
+  Widget _buildItem(BuildContext context, int index,
       List<TouristAttraction> touristAttractions) {
     Size size = MediaQuery.of(context).size;
-    final similarListProvider = Provider.of<SimilarListProvider>(context);
 
     return GestureDetector(
-      onTap: () async {
-        await similarListProvider.downloadOneImage(touristAttractions[index]);
+      onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -61,8 +63,7 @@ class ListScreen extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image(
-                      image: NetworkImage(similarListProvider
-                          .touristAttractions[index].downloadedURL![0]),
+                      image: NetworkImage(touristAttractions[index].imgURLs[0]),
                       height: 180,
                       width: size.width,
                       fit: BoxFit.cover,
@@ -85,11 +86,11 @@ class ListScreen extends StatelessWidget {
                   )
                 ]),
                 Text(
-                  touristAttractions[index].title!,
+                  touristAttractions[index].title,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  touristAttractions[index].address!,
+                  touristAttractions[index].address,
                   style: TextStyle(
                       fontSize: 15, color: Colors.black.withOpacity(0.6)),
                 ),

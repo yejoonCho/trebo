@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trebo/screens/home_screen.dart';
-import 'package:trebo/screens/recommend_screen.dart';
+import 'package:trebo/screens/category_screen.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   @override
@@ -16,7 +16,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             break;
           case 1:
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => RecommendScreen()));
+                MaterialPageRoute(builder: (context) => CategoryScreen()));
             break;
         }
       },
