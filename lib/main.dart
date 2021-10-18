@@ -1,14 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
-import 'package:trebo/provider/google_sign_in.dart';
-import 'package:trebo/provider/random_image_provider.dart';
-import 'package:trebo/provider/similar_list_provider.dart';
 import 'package:trebo/provider/weather_provider.dart';
+import 'package:trebo/repositories/restaurant_repository.dart';
 import 'package:trebo/repositories/tourist_attraction_repository.dart';
-import 'package:trebo/screens/login_screen.dart';
-import 'package:trebo/screens/category_screen.dart';
+import 'package:trebo/screens/home_screen.dart';
 
 void main() async {
   // 파이어베이스 설정
@@ -16,13 +15,23 @@ void main() async {
   await Firebase.initializeApp();
   // 레파지토리
   final _touristAttractionRepository = TouristAttractionRepository();
+  final _restaurantRepository = RestaurantRepository();
 
   return runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => GoogleSignInProvider()),
       ChangeNotifierProvider(create: (context) => WeatherProvider()),
+      StreamProvider<bool>(
+        create: (context) => FirebaseAuth.instance
+            .authStateChanges()
+            .map((user) => user != null),
+        initialData: false,
+      ),
       StreamProvider<List<TouristAttraction>>(
         create: (context) => _touristAttractionRepository.fetch(),
+        initialData: [],
+      ),
+      StreamProvider<List<Restaurant>>(
+        create: (context) => _restaurantRepository.fetch(),
         initialData: [],
       )
     ],
@@ -35,7 +44,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TREBO',
-      home: LoginScreen(),
+      home: HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

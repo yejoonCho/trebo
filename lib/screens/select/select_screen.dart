@@ -1,19 +1,23 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
-import 'package:trebo/provider/random_image_provider.dart';
-import 'package:trebo/provider/similar_list_provider.dart';
-import 'package:trebo/screens/list/list_loading.dart';
 import 'package:trebo/screens/list/list_screen.dart';
-import 'package:trebo/screens/login_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/custom_loading.dart';
 import 'package:ml_linalg/linalg.dart' as linalg;
 
 class SelectScreeen extends StatefulWidget {
-  final List<TouristAttraction> touristAttractions;
-  SelectScreeen({required this.touristAttractions});
+  late List<dynamic> places;
+  SelectScreeen({required List<dynamic> places}) {
+    if (places is List<TouristAttraction>) {
+      List<TouristAttraction>.from(places);
+    } else if (places is List<Restaurant>) {
+      List<Restaurant>.from(places);
+    }
+    this.places = places;
+  }
   @override
   _SelectScreeenState createState() => _SelectScreeenState();
 }
@@ -30,8 +34,7 @@ class _SelectScreeenState extends State<SelectScreeen> {
             icon: Icon(Icons.refresh),
             onPressed: () {
               setState(() {
-                randomIndex =
-                    Random().nextInt(widget.touristAttractions.length);
+                randomIndex = Random().nextInt(widget.places.length);
               });
             },
           ),
@@ -48,7 +51,7 @@ class _SelectScreeenState extends State<SelectScreeen> {
               mainAxisSpacing: 20,
             ),
             itemBuilder: (context, _) {
-              randomIndex = Random().nextInt(widget.touristAttractions.length);
+              randomIndex = Random().nextInt(widget.places.length);
               return _buildItem(context, randomIndex);
             },
             itemCount: 10,
@@ -60,16 +63,15 @@ class _SelectScreeenState extends State<SelectScreeen> {
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    int rand =
-        Random().nextInt(widget.touristAttractions[index].imgURLs.length);
+    int rand = Random().nextInt(widget.places[index].imgURLs.length);
     return GestureDetector(
       onTap: () {
         // 코사인 유사도 계산
         var temp = {};
         final vector1 = linalg.Vector.fromList(List<num>.from(
-            widget.touristAttractions[index].vectors[rand].values.toList()[0]));
+            widget.places[index].vectors[rand].values.toList()[0]));
 
-        widget.touristAttractions.forEach((touristAttraction) {
+        widget.places.forEach((touristAttraction) {
           touristAttraction.vectors.forEach((vec) {
             var vector2 =
                 linalg.Vector.fromList(List<num>.from(vec.values.toList()[0]));
@@ -96,19 +98,21 @@ class _SelectScreeenState extends State<SelectScreeen> {
         });
         print(topPlace);
 
-        List<TouristAttraction> result = widget.touristAttractions
+        List<dynamic> result = widget.places
             .where((element) => topPlace.contains(element.id))
             .toList();
+
+        print('완료');
 
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ListScreen(touristAttractions: result)));
+                builder: (context) => ListScreen(places: result)));
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Image.network(
-          widget.touristAttractions[index].imgURLs[rand],
+          widget.places[index].imgURLs[rand],
           fit: BoxFit.cover,
         ),
       ),

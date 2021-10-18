@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
+import 'package:trebo/notifiers/like_notifier.dart';
 import 'package:trebo/screens/detail/detail_screen.dart';
 import 'package:trebo/screens/list/list_screen_app_bar.dart';
 import 'package:trebo/screens/list/categories.dart';
+import 'package:trebo/widgets/like_button.dart';
 
 class ListScreen extends StatefulWidget {
-  final List<TouristAttraction> touristAttractions;
-  ListScreen({required this.touristAttractions});
+  late List<dynamic> places;
+  ListScreen({required places}) {
+    if (places is List<TouristAttraction>) {
+      List<TouristAttraction>.from(places);
+    } else if (places is List<Restaurant>) {
+      List<Restaurant>.from(places);
+    }
+    this.places = places;
+  }
   @override
   _ListScreenState createState() => _ListScreenState();
 }
@@ -27,9 +37,9 @@ class _ListScreenState extends State<ListScreen> {
             Expanded(
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
-                itemCount: widget.touristAttractions.length,
+                itemCount: widget.places.length,
                 itemBuilder: (context, index) {
-                  return _buildItem(context, index, widget.touristAttractions);
+                  return _buildItem(context, index, widget.places);
                 },
               ),
             )
@@ -39,8 +49,7 @@ class _ListScreenState extends State<ListScreen> {
     );
   }
 
-  Widget _buildItem(BuildContext context, int index,
-      List<TouristAttraction> touristAttractions) {
+  Widget _buildItem(BuildContext context, int index, List<dynamic> places) {
     Size size = MediaQuery.of(context).size;
 
     return GestureDetector(
@@ -48,8 +57,7 @@ class _ListScreenState extends State<ListScreen> {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  DetailScreen(touristAttraction: touristAttractions[index]),
+              builder: (context) => DetailScreen(place: places[index]),
             ));
       },
       child: Padding(
@@ -63,34 +71,23 @@ class _ListScreenState extends State<ListScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image(
-                      image: NetworkImage(touristAttractions[index].imgURLs[0]),
+                      image: NetworkImage(places[index].imgURLs[0]),
                       height: 180,
                       width: size.width,
                       fit: BoxFit.cover,
                     ),
                   ),
-                  Positioned(
-                    right: 10,
-                    top: 5,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white,
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.favorite_border_rounded),
-                        color: Colors.black,
-                        onPressed: () {},
-                      ),
-                    ),
+                  ChangeNotifierProvider.value(
+                    value: LikeNotifier(place: places[index]),
+                    child: LikeButton(),
                   )
                 ]),
                 Text(
-                  touristAttractions[index].title,
+                  places[index].title,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  touristAttractions[index].address,
+                  places[index].address,
                   style: TextStyle(
                       fontSize: 15, color: Colors.black.withOpacity(0.6)),
                 ),
