@@ -47,6 +47,8 @@ dependencies:
   # calculation
   latlong2: ^0.8.1
   ml_linalg: ^13.0.2
+  # plug in
+  google_maps_flutter: ^2.0.9
   # test
   # test: any
 

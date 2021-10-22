@@ -1,31 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/app_theme.dart';
 import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
-import 'package:trebo/screens/select/select_screen.dart';
+import 'package:trebo/screens/select_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
+import 'package:trebo/widgets/custom_drawer.dart';
+import 'package:trebo/widgets/login_dialog.dart';
 
-class CategoryScreen extends StatefulWidget {
-  @override
-  _CategoryScreenState createState() => _CategoryScreenState();
-}
-
-class _CategoryScreenState extends State<CategoryScreen> {
-  late PageController _pageController;
-  int currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(
-      viewportFraction: 1.0,
-      initialPage: currentPage,
-      keepPage: false,
-    );
-  }
-
+class CategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -34,7 +19,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     final restaurants = Provider.of<List<Restaurant>>(context);
 
     return Scaffold(
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      drawer: CustomDrawer(),
       body: SafeArea(
         child: Stack(
           children: [
@@ -46,119 +31,48 @@ class _CategoryScreenState extends State<CategoryScreen> {
               children: [
                 SizedBox(height: 20),
                 _AppBar(),
+                SizedBox(height: 20),
+                _Title(text: 'Category'),
+                SizedBox(height: 20),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 30, right: 30),
+                    child: Row(
+                      children: [
+                        _Card(
+                          category: '관광지',
+                          positionedImage: Positioned(
+                              left: 20,
+                              bottom: 120,
+                              child:
+                                  Image.asset('assets/tourist_attraction.png')),
+                          places: touristAttractions,
+                          screenWidth: screenWidth,
+                          screenHeight: screenHeight,
+                          startColor: Colors.blueGrey.shade200,
+                          endColor: Colors.yellowAccent.shade400,
+                        ),
+                        SizedBox(width: 50),
+                        _Card(
+                          category: '음식점',
+                          positionedImage: Positioned(
+                              left: -30,
+                              bottom: 90,
+                              child: Image.asset('assets/bibimbap.png',
+                                  scale: 4.2)),
+                          places: touristAttractions,
+                          screenWidth: screenWidth,
+                          screenHeight: screenHeight,
+                          startColor: Colors.cyan.shade200,
+                          endColor: Colors.yellowAccent.shade400,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
-            PageView(
-              controller: _pageController,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 100),
-                    _Title(text: '관광지'),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SelectScreeen(places: touristAttractions)));
-                      },
-                      child: Stack(children: [
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: ClipPath(
-                            clipper: _CardBackgroundClipper(),
-                            child: Container(
-                              height: screenHeight * 0.55,
-                              width: screenWidth * 0.9,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.green.shade200,
-                                    Colors.greenAccent.shade400
-                                  ],
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                            left: 40,
-                            bottom: 30,
-                            child: Image.asset(
-                              'assets/tourist_attraction.png',
-                              height: screenHeight * 0.55,
-                            )),
-                        Positioned(
-                          left: 60,
-                          bottom: 30,
-                          child: Text(
-                            '추천을 받으려면 클릭하세요',
-                            style: AppTheme.subHeading,
-                          ),
-                        )
-                      ]),
-                    )
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 100),
-                    _Title(text: '음식'),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SelectScreeen(places: restaurants)));
-                      },
-                      child: Stack(children: [
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: ClipPath(
-                            clipper: _CardBackgroundClipper(),
-                            child: Container(
-                              height: screenHeight * 0.55,
-                              width: screenWidth * 0.9,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.yellow.shade100,
-                                    Colors.pink.shade200,
-                                  ],
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                            left: 40,
-                            bottom: 30,
-                            child: Image.asset(
-                              'assets/tourist_attraction.png',
-                              height: screenHeight * 0.55,
-                            )),
-                        Positioned(
-                          left: 60,
-                          bottom: 30,
-                          child: Text(
-                            '추천을 받으려면 클릭하세요',
-                            style: AppTheme.subHeading,
-                          ),
-                        )
-                      ]),
-                    ),
-                  ],
-                ),
-              ],
-            )
           ],
         ),
       ),
@@ -189,6 +103,7 @@ class _Background extends StatelessWidget {
 class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isUserLoggedIn = Provider.of<bool>(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -211,10 +126,40 @@ class _AppBar extends StatelessWidget {
                   color: Colors.blueGrey.shade600,
                   size: 25,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
               ),
             ),
           ),
+          isUserLoggedIn
+              ? TextButton(
+                  child: Text(
+                    'Log out',
+                    style: TextStyle(
+                      color: Colors.yellow.shade900,
+                      fontSize: 24,
+                    ),
+                  ),
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                  },
+                )
+              : TextButton(
+                  child: Text(
+                    'Log In',
+                    style: TextStyle(
+                      color: Colors.yellow.shade900,
+                      fontSize: 24,
+                    ),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => LoginDialog(),
+                    );
+                  },
+                )
         ],
       ),
     );
@@ -241,25 +186,94 @@ class _Title extends StatelessWidget {
   }
 }
 
+class _Card extends StatelessWidget {
+  final String category;
+  final positionedImage;
+  final places;
+  final screenWidth;
+  final screenHeight;
+  final startColor;
+  final endColor;
+
+  _Card(
+      {required this.category,
+      required this.positionedImage,
+      required this.places,
+      required this.screenWidth,
+      required this.screenHeight,
+      required this.startColor,
+      required this.endColor});
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SelectScreeen(places: places)));
+      },
+      child: Stack(children: [
+        ClipPath(
+          clipper: _CardBackgroundClipper(),
+          child: Container(
+            height: screenHeight * 0.6,
+            width: screenWidth * 0.7,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [startColor, endColor],
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+              ),
+            ),
+          ),
+        ),
+        positionedImage,
+        Positioned(
+          left: 0,
+          bottom: 20,
+          child: Column(
+            children: [
+              Text(
+                category,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '추천을 받으려면 클릭하세요',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22,
+                ),
+              ),
+            ],
+          ),
+        )
+      ]),
+    );
+  }
+}
+
 class _CardBackgroundClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path clippedPath = Path();
     double curveDistance = 40;
 
-    clippedPath.moveTo(0, size.height * 0.4);
+    clippedPath.moveTo(0, size.height * 0.2);
     clippedPath.lineTo(0, size.height - curveDistance);
-    clippedPath.quadraticBezierTo(
-        1, size.height - 1, 0 + curveDistance, size.height);
+    clippedPath.quadraticBezierTo(0, size.height, curveDistance, size.height);
     clippedPath.lineTo(size.width - curveDistance, size.height);
-    clippedPath.quadraticBezierTo(size.width + 1, size.height - 1, size.width,
-        size.height - curveDistance);
-    clippedPath.lineTo(size.width, 0 + curveDistance);
-    clippedPath.quadraticBezierTo(size.width - 1, 0,
-        size.width - curveDistance - 5, 0 + curveDistance / 3);
-    clippedPath.lineTo(curveDistance, size.height * 0.29);
     clippedPath.quadraticBezierTo(
-        1, (size.height * 0.30) + 10, 0, size.height * 0.4);
+        size.width, size.height, size.width, size.height - curveDistance);
+    clippedPath.lineTo(size.width, size.height * 0.2 + curveDistance);
+    clippedPath.quadraticBezierTo(size.width, size.height * 0.2,
+        size.width - curveDistance, size.height * 0.2);
+    clippedPath.lineTo(0 + curveDistance, size.height * 0.2);
+    clippedPath.quadraticBezierTo(
+        0, size.height * 0.2, 0, size.height * 0.2 + curveDistance);
     return clippedPath;
   }
 

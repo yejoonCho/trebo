@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
-import 'package:trebo/provider/weather_provider.dart';
 import 'package:trebo/repositories/restaurant_repository.dart';
 import 'package:trebo/repositories/tourist_attraction_repository.dart';
 import 'package:trebo/screens/home_screen.dart';
@@ -19,7 +18,6 @@ void main() async {
 
   return runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => WeatherProvider()),
       StreamProvider<bool>(
         create: (context) => FirebaseAuth.instance
             .authStateChanges()
