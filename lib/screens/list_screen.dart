@@ -1,14 +1,19 @@
+import 'package:clay_containers/clay_containers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/notifiers/like_notifier.dart';
 import 'package:trebo/screens/detail_screen.dart';
+import 'package:trebo/widgets/custom_drawer.dart';
 import 'package:trebo/widgets/like_button.dart';
+import 'package:trebo/widgets/login_dialog.dart';
 
 class ListScreen extends StatefulWidget {
   late List<dynamic> places;
-  ListScreen({required places}) {
+  final List<double> distances;
+  ListScreen({required places, required this.distances}) {
     if (places is List<TouristAttraction>) {
       List<TouristAttraction>.from(places);
     } else if (places is List<Restaurant>) {
@@ -23,25 +28,29 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   @override
   Widget build(BuildContext context) {
-    double top = MediaQuery.of(context).padding.top;
-    return Scaffold(
-      body: Container(
-        color: Colors.grey.shade300,
-        child: Column(
-          children: [
-            SizedBox(height: top),
-            _AppBar(),
-            _Categories(),
-            Expanded(
-              child: ListView.builder(
-                physics: BouncingScrollPhysics(),
-                itemCount: widget.places.length,
-                itemBuilder: (context, index) {
-                  return _buildItem(context, index, widget.places);
-                },
-              ),
-            )
-          ],
+    return SafeArea(
+      child: Scaffold(
+        drawer: CustomDrawer(),
+        body: Container(
+          color: Colors.grey.shade300,
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              _AppBar(),
+              SizedBox(height: 20),
+              _Categories(),
+              SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: widget.places.length,
+                  itemBuilder: (context, index) {
+                    return _buildItem(context, index, widget.places);
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -80,16 +89,60 @@ class _ListScreenState extends State<ListScreen> {
                     child: LikeButton(),
                   )
                 ]),
-                Text(
-                  places[index].title,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  places[index].address,
-                  style: TextStyle(
-                      fontSize: 15, color: Colors.black.withOpacity(0.6)),
-                ),
-                SizedBox(height: 10)
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                places[index].title,
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                places[index].address,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black.withOpacity(0.6)),
+                              ),
+                            ]),
+                      ),
+                      Positioned(
+                        top: 5,
+                        right: 10,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 2, color: Colors.green),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.distances[index].toInt().toString(),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'km',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black.withOpacity(0.8)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             )),
       ),
@@ -97,50 +150,110 @@ class _ListScreenState extends State<ListScreen> {
   }
 }
 
+// class _AppBar extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     Size size = MediaQuery.of(context).size;
+//     return Padding(
+//       padding: const EdgeInsets.only(
+//         left: 20,
+//         right: 20,
+//         top: 10,
+//       ),
+//       child: Container(
+//         height: size.height * 0.08,
+//         child: Column(
+//           children: [
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 GestureDetector(
+//                   onTap: () {
+//                     Navigator.pop(context);
+//                   },
+//                   child: Container(
+//                     height: 50,
+//                     width: 50,
+//                     decoration: BoxDecoration(
+//                       border: Border.all(color: Colors.black.withOpacity(0.4)),
+//                       borderRadius: BorderRadius.circular(15),
+//                     ),
+//                     child: Icon(Icons.arrow_back),
+//                   ),
+//                 ),
+//                 Container(
+//                   height: 50,
+//                   width: 50,
+//                   decoration: BoxDecoration(
+//                     border: Border.all(color: Colors.black.withOpacity(0.4)),
+//                     borderRadius: BorderRadius.circular(15),
+//                   ),
+//                   child: Icon(Icons.insights_rounded),
+//                 )
+//               ],
+//             )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 10,
-      ),
-      child: Container(
-        height: size.height * 0.08,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black.withOpacity(0.4)),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Icon(Icons.arrow_back),
-                  ),
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ClayContainer(
+            height: 50,
+            width: 50,
+            depth: 20,
+            borderRadius: 25,
+            curveType: CurveType.concave,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueGrey.shade300, width: 2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.blueGrey.shade600,
+                  size: 25,
                 ),
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black.withOpacity(0.4)),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Icon(Icons.insights_rounded),
-                )
-              ],
-            )
-          ],
-        ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          ClayContainer(
+            height: 50,
+            width: 50,
+            depth: 20,
+            borderRadius: 25,
+            curveType: CurveType.concave,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueGrey.shade300, width: 2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.blueGrey.shade600,
+                  size: 25,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

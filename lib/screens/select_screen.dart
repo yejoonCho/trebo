@@ -1,16 +1,24 @@
 import 'dart:math';
+import 'package:clay_containers/clay_containers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/screens/list_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
+import 'package:trebo/widgets/custom_drawer.dart';
 import 'package:trebo/widgets/custom_loading.dart';
 import 'package:ml_linalg/linalg.dart' as linalg;
+import 'package:trebo/widgets/login_dialog.dart';
+import 'package:latlong2/latlong.dart';
 
 class SelectScreeen extends StatefulWidget {
+  final Position position;
   late List<dynamic> places;
-  SelectScreeen({required List<dynamic> places}) {
+  SelectScreeen({required this.position, required List<dynamic> places}) {
     if (places is List<TouristAttraction>) {
       List<TouristAttraction>.from(places);
     } else if (places is List<Restaurant>) {
@@ -27,38 +35,49 @@ class _SelectScreeenState extends State<SelectScreeen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('선택'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {
-                randomIndex = Random().nextInt(widget.places.length);
-              });
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        color: Colors.grey.shade200,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-            ),
-            itemBuilder: (context, _) {
-              randomIndex = Random().nextInt(widget.places.length);
-              return _buildItem(context, randomIndex);
-            },
-            itemCount: 10,
+      drawer: CustomDrawer(),
+      body: SafeArea(
+        child: Container(
+          color: Colors.grey.shade200,
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              _AppBar(),
+              SizedBox(height: 30),
+              Text(
+                '사진을 선택해주세요',
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 30),
+              GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                ),
+                itemBuilder: (context, _) {
+                  randomIndex = Random().nextInt(widget.places.length);
+                  return _buildItem(context, randomIndex);
+                },
+                itemCount: 4,
+                shrinkWrap: true,
+              ),
+              SizedBox(height: 40),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    randomIndex = Random().nextInt(widget.places.length);
+                  });
+                },
+                child: _RefreshIcon(),
+              )
+            ],
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 
@@ -103,11 +122,22 @@ class _SelectScreeenState extends State<SelectScreeen> {
             .toList();
 
         print('완료');
-
+        // 사용자와의 거리계산
+        List<double> distances = [];
+        result.forEach((place) {
+          Distance distance = Distance();
+          double km = distance.as(
+              LengthUnit.Kilometer,
+              LatLng(widget.position.latitude, widget.position.longitude),
+              LatLng(place.latitude, place.longitude));
+          distances.add(km);
+        });
+        print(distances);
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ListScreen(places: result)));
+                builder: (context) =>
+                    ListScreen(places: result, distances: distances)));
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
@@ -117,5 +147,88 @@ class _SelectScreeenState extends State<SelectScreeen> {
         ),
       ),
     );
+  }
+}
+
+class _AppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ClayContainer(
+            height: 50,
+            width: 50,
+            depth: 20,
+            borderRadius: 25,
+            curveType: CurveType.concave,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueGrey.shade300, width: 2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.blueGrey.shade600,
+                  size: 25,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          ClayContainer(
+            height: 50,
+            width: 50,
+            depth: 20,
+            borderRadius: 25,
+            curveType: CurveType.concave,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueGrey.shade300, width: 2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.blueGrey.shade600,
+                  size: 25,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RefreshIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Padding(
+          padding: EdgeInsets.all(6),
+          child: Icon(
+            Icons.refresh,
+            size: 48,
+          ),
+        ),
+        decoration: BoxDecoration(
+          color: Colors.amber.shade300,
+          border: Border.all(
+            color: Colors.black,
+            style: BorderStyle.solid,
+            width: 3,
+          ),
+          shape: BoxShape.circle,
+        ));
   }
 }

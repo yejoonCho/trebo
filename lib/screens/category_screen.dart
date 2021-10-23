@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:clay_containers/clay_containers.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:trebo/app_theme.dart';
 import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
+import 'package:trebo/repositories/location_repository.dart';
 import 'package:trebo/screens/select_screen.dart';
 import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/custom_drawer.dart';
@@ -61,7 +63,7 @@ class CategoryScreen extends StatelessWidget {
                               bottom: 90,
                               child: Image.asset('assets/bibimbap.png',
                                   scale: 4.2)),
-                          places: touristAttractions,
+                          places: restaurants,
                           screenWidth: screenWidth,
                           screenHeight: screenHeight,
                           startColor: Colors.cyan.shade200,
@@ -206,11 +208,16 @@ class _Card extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
+        final _locationRepository = LocationRepository();
+        Position position = await _locationRepository.getLocation();
+        print(position.latitude);
+        print(position.longitude);
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => SelectScreeen(places: places)));
+                builder: (context) =>
+                    SelectScreeen(position: position, places: places)));
       },
       child: Stack(children: [
         ClipPath(
