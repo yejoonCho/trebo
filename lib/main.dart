@@ -6,7 +6,7 @@ import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/repositories/restaurant_repository.dart';
 import 'package:trebo/repositories/tourist_attraction_repository.dart';
-import 'package:trebo/screens/home_screen.dart';
+import 'package:trebo/screens/category_screen.dart';
 
 void main() async {
   // 파이어베이스 설정
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TREBO',
-      home: HomeScreen(),
+      home: CategoryScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

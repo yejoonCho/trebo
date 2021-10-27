@@ -5,20 +5,20 @@ import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 
 class LikeNotifier extends ChangeNotifier {
-  User? user = FirebaseAuth.instance.currentUser;
   late dynamic place;
   bool isLiked = false;
 
   LikeNotifier({required this.place});
 
   void init() async {
+    User? user = FirebaseAuth.instance.currentUser;
     String? category;
     List streamedList = [];
 
     if (place is TouristAttraction) {
       category = 'tourist_attraction';
     } else if (place is Restaurant) {
-      category = 'retaurant';
+      category = 'restaurant';
     }
 
     // 읽어오기
@@ -40,13 +40,14 @@ class LikeNotifier extends ChangeNotifier {
   }
 
   void toggleLike() async {
+    User? user = FirebaseAuth.instance.currentUser;
     String? category;
     List streamedList = [];
 
     if (place is TouristAttraction) {
       category = 'tourist_attraction';
     } else if (place is Restaurant) {
-      category = 'retaurant';
+      category = 'restaurant';
     }
 
     // 읽어오기
@@ -71,8 +72,8 @@ class LikeNotifier extends ChangeNotifier {
     // 수정
     FirebaseFirestore.instance
         .collection('feelings')
-        .doc(user!.uid)
-        .set({category!: streamedList});
+        .doc(user.uid)
+        .update({category!: streamedList});
 
     isLiked = !isLiked;
     notifyListeners();

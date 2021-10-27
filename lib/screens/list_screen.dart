@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/notifiers/like_notifier.dart';
-import 'package:trebo/screens/detail_screen.dart';
+import 'package:trebo/screens/detail/detail_screen.dart';
 import 'package:trebo/widgets/custom_drawer.dart';
 import 'package:trebo/widgets/like_button.dart';
 import 'package:trebo/widgets/login_dialog.dart';
@@ -38,17 +38,20 @@ class _ListScreenState extends State<ListScreen> {
               SizedBox(height: 20),
               _AppBar(),
               SizedBox(height: 20),
-              _Categories(),
+              // Categories(),
               SizedBox(height: 20),
               Expanded(
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: widget.places.length,
-                  itemBuilder: (context, index) {
-                    return _buildItem(context, index, widget.places);
-                  },
-                ),
-              )
+                  child: ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: widget.places.length,
+                itemBuilder: (context, index) {
+                  return _buildItem(context, index, widget.places);
+                },
+              )),
+              if (Categories.of(context)?.selectedCategoryIndex == 1)
+                Container(
+                  child: Text('ddd'),
+                )
             ],
           ),
         ),
@@ -84,9 +87,13 @@ class _ListScreenState extends State<ListScreen> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  ChangeNotifierProvider.value(
-                    value: LikeNotifier(place: places[index]),
-                    child: LikeButton(),
+                  Positioned(
+                    right: 10,
+                    top: 5,
+                    child: ChangeNotifierProvider.value(
+                      value: LikeNotifier(place: places[index]),
+                      child: LikeButton(),
+                    ),
                   )
                 ]),
                 Expanded(
@@ -150,58 +157,10 @@ class _ListScreenState extends State<ListScreen> {
   }
 }
 
-// class _AppBar extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     Size size = MediaQuery.of(context).size;
-//     return Padding(
-//       padding: const EdgeInsets.only(
-//         left: 20,
-//         right: 20,
-//         top: 10,
-//       ),
-//       child: Container(
-//         height: size.height * 0.08,
-//         child: Column(
-//           children: [
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 GestureDetector(
-//                   onTap: () {
-//                     Navigator.pop(context);
-//                   },
-//                   child: Container(
-//                     height: 50,
-//                     width: 50,
-//                     decoration: BoxDecoration(
-//                       border: Border.all(color: Colors.black.withOpacity(0.4)),
-//                       borderRadius: BorderRadius.circular(15),
-//                     ),
-//                     child: Icon(Icons.arrow_back),
-//                   ),
-//                 ),
-//                 Container(
-//                   height: 50,
-//                   width: 50,
-//                   decoration: BoxDecoration(
-//                     border: Border.all(color: Colors.black.withOpacity(0.4)),
-//                     borderRadius: BorderRadius.circular(15),
-//                   ),
-//                   child: Icon(Icons.insights_rounded),
-//                 )
-//               ],
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isUserLoggedIn = Provider.of<bool>(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -230,41 +189,61 @@ class _AppBar extends StatelessWidget {
               ),
             ),
           ),
-          ClayContainer(
-            height: 50,
-            width: 50,
-            depth: 20,
-            borderRadius: 25,
-            curveType: CurveType.concave,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueGrey.shade300, width: 2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  Icons.menu,
-                  color: Colors.blueGrey.shade600,
-                  size: 25,
-                ),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              ),
-            ),
-          ),
+          isUserLoggedIn
+              ? ClayContainer(
+                  height: 50,
+                  width: 50,
+                  depth: 20,
+                  borderRadius: 25,
+                  curveType: CurveType.concave,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border:
+                          Border.all(color: Colors.blueGrey.shade300, width: 2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: Colors.blueGrey.shade600,
+                        size: 25,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    ),
+                  ),
+                )
+              : TextButton(
+                  child: Text(
+                    'Log In',
+                    style: TextStyle(
+                      color: Colors.yellow.shade900,
+                      fontSize: 24,
+                    ),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => LoginDialog(),
+                    );
+                  },
+                )
         ],
       ),
     );
   }
 }
 
-class _Categories extends StatefulWidget {
+class Categories extends StatefulWidget {
   @override
-  _CategoriesState createState() => _CategoriesState();
+  CategoriesState createState() => CategoriesState();
+
+  static CategoriesState? of(BuildContext context) =>
+      context.findAncestorStateOfType<CategoriesState>();
 }
 
-class _CategoriesState extends State<_Categories> {
+class CategoriesState extends State<Categories> {
   int selectedCategoryIndex = 0;
 
   @override
@@ -282,15 +261,16 @@ class _CategoriesState extends State<_Categories> {
           child: ListView.builder(
             physics: BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: 5,
+            itemCount: 4,
             itemBuilder: (context, index) {
-              return _buildCategory(context, index);
+              return _buildCategory(
+                  context, index, ['유사도순', '거리순', '댓글순', '추천순']);
             },
           )),
     );
   }
 
-  Widget _buildCategory(BuildContext context, int index) {
+  Widget _buildCategory(BuildContext context, int index, List<String> titles) {
     return GestureDetector(
       child: Padding(
         padding: EdgeInsets.only(right: 10),
@@ -303,9 +283,10 @@ class _CategoriesState extends State<_Categories> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
-            child: Text('similarity',
+            child: Text(titles[index],
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: 20,
                     color: selectedCategoryIndex == index
                         ? Colors.black
                         : Colors.black)),

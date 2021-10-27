@@ -3,23 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:trebo/app_theme.dart';
 import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/repositories/location_repository.dart';
 import 'package:trebo/screens/select_screen.dart';
-import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/custom_drawer.dart';
 import 'package:trebo/widgets/login_dialog.dart';
 
-class CategoryScreen extends StatelessWidget {
+class CategoryScreen extends StatefulWidget {
+  @override
+  _CategoryScreenState createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final touristAttractions = Provider.of<List<TouristAttraction>>(context);
     final restaurants = Provider.of<List<Restaurant>>(context);
-
     return Scaffold(
       drawer: CustomDrawer(),
       body: SafeArea(
@@ -111,29 +115,32 @@ class _AppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ClayContainer(
-            height: 50,
-            width: 50,
-            depth: 20,
-            borderRadius: 25,
-            curveType: CurveType.concave,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueGrey.shade300, width: 2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  Icons.menu,
-                  color: Colors.blueGrey.shade600,
-                  size: 25,
-                ),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              ),
-            ),
-          ),
+          isUserLoggedIn
+              ? ClayContainer(
+                  height: 50,
+                  width: 50,
+                  depth: 20,
+                  borderRadius: 25,
+                  curveType: CurveType.concave,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border:
+                          Border.all(color: Colors.blueGrey.shade300, width: 2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: Colors.blueGrey.shade600,
+                        size: 25,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    ),
+                  ),
+                )
+              : Container(),
           isUserLoggedIn
               ? TextButton(
                   child: Text(
@@ -236,7 +243,7 @@ class _Card extends StatelessWidget {
         ),
         positionedImage,
         Positioned(
-          left: 0,
+          left: 20,
           bottom: 20,
           child: Column(
             children: [

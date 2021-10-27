@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:clay_containers/clay_containers.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:geolocator/geolocator.dart';
@@ -8,9 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:trebo/models/restaurant.dart';
 import 'package:trebo/models/tourist_attraction.dart';
 import 'package:trebo/screens/list_screen.dart';
-import 'package:trebo/widgets/bottom_navigation_bar.dart';
 import 'package:trebo/widgets/custom_drawer.dart';
-import 'package:trebo/widgets/custom_loading.dart';
 import 'package:ml_linalg/linalg.dart' as linalg;
 import 'package:trebo/widgets/login_dialog.dart';
 import 'package:latlong2/latlong.dart';
@@ -51,21 +48,30 @@ class _SelectScreeenState extends State<SelectScreeen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 30),
-              GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                itemBuilder: (context, _) {
-                  randomIndex = Random().nextInt(widget.places.length);
-                  return _buildItem(context, randomIndex);
-                },
-                itemCount: 4,
-                shrinkWrap: true,
+              SizedBox(height: 10),
+              Text(
+                '사진과 유사한 가게 5곳이 추천됩니다.',
+                style: TextStyle(
+                    fontSize: 20, color: Colors.black.withOpacity(0.4)),
               ),
               SizedBox(height: 40),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                  ),
+                  itemBuilder: (context, _) {
+                    randomIndex = Random().nextInt(widget.places.length);
+                    return _buildItem(context, randomIndex);
+                  },
+                  itemCount: 4,
+                  shrinkWrap: true,
+                ),
+              ),
+              SizedBox(height: 30),
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -153,6 +159,7 @@ class _SelectScreeenState extends State<SelectScreeen> {
 class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isUserLoggedIn = Provider.of<bool>(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -181,29 +188,46 @@ class _AppBar extends StatelessWidget {
               ),
             ),
           ),
-          ClayContainer(
-            height: 50,
-            width: 50,
-            depth: 20,
-            borderRadius: 25,
-            curveType: CurveType.concave,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueGrey.shade300, width: 2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  Icons.menu,
-                  color: Colors.blueGrey.shade600,
-                  size: 25,
-                ),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              ),
-            ),
-          ),
+          isUserLoggedIn
+              ? ClayContainer(
+                  height: 50,
+                  width: 50,
+                  depth: 20,
+                  borderRadius: 25,
+                  curveType: CurveType.concave,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border:
+                          Border.all(color: Colors.blueGrey.shade300, width: 2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: Colors.blueGrey.shade600,
+                        size: 25,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    ),
+                  ),
+                )
+              : TextButton(
+                  child: Text(
+                    'Log In',
+                    style: TextStyle(
+                      color: Colors.yellow.shade900,
+                      fontSize: 24,
+                    ),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => LoginDialog(),
+                    );
+                  },
+                )
         ],
       ),
     );
